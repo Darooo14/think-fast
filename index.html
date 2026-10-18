@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>THINK FAST!!!</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,12 +12,12 @@
     <h1>THINK<br>FAST!!!</h1>
     <p>15 soal dari 5 tema yang berganti. Pilih durasi pengerjaan. Kamu boleh pindah antar soal dan mengubah jawaban selama waktu masih ada. Kunci jawaban dan pembahasan muncul setelah kuis dikumpulkan.</p>
     <label class="field" for="nama">Nama peserta</label>
-<input id="nama" class="answer" type="text" maxlength="40" placeholder="Tulis namamu" autocomplete="name">
-<div class="err" id="err" aria-live="polite"></div>
+    <input id="nama" class="answer" type="text" maxlength="40" placeholder="Tulis namamu" autocomplete="name">
+    <div class="err" id="err" aria-live="polite"></div>
     <div class="row">
-    <a class="btn" id="poster" href="poster.html" target="_blank" rel="noopener">Buat poster</a>
-    <button class="btn ghost" id="again">Main lagi</button>
-</div>
+      <button class="btn" data-min="30">Mulai 30 menit</button>
+      <button class="btn" data-min="60">Mulai 60 menit</button>
+    </div>
   </section>
 
   <section id="game" class="hidden">
@@ -43,7 +41,10 @@
     <div class="big score" id="final"></div>
     <p id="detail"></p>
     <div id="review"></div>
-    <div class="row"><button class="btn" id="again">Main lagi</button></div>
+    <div class="row">
+      <a class="btn" id="poster" href="poster.html" target="_blank" rel="noopener">Buat poster</a>
+      <button class="btn ghost" id="again">Main lagi</button>
+    </div>
   </section>
 </main>
 
