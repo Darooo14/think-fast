@@ -157,6 +157,7 @@ p{line-height:1.6;max-width:48ch;color:var(--ink)}
   .letter{width:44px;height:54px;font-size:1.45rem}
 }
 @media (prefers-reduced-motion:reduce){
+  .hidden{display:none!important}
   *{transition:none!important;animation:none!important}
 }
 .field{display:block;margin-top:22px;margin-bottom:8px;font-weight:700;color:var(--soft)}
