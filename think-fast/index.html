@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THINK FAST!!!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <section id="start">
+    <h1>THINK<br>FAST!!!</h1>
+    <p>15 soal dari 5 tema yang berganti. Pilih durasi pengerjaan. Kamu boleh pindah antar soal dan mengubah jawaban selama waktu masih ada. Kunci jawaban dan pembahasan muncul setelah kuis dikumpulkan.</p>
+    <label class="field" for="nama">Nama peserta</label>
+<input id="nama" class="answer" type="text" maxlength="40" placeholder="Tulis namamu" autocomplete="name">
+<div class="err" id="err" aria-live="polite"></div>
+    <div class="row">
+    <a class="btn" id="poster" href="poster.html" target="_blank" rel="noopener">Buat poster</a>
+    <button class="btn ghost" id="again">Main lagi</button>
+</div>
+  </section>
+
+  <section id="game" class="hidden">
+    <div class="top"><span id="no"></span><span id="clock"></span></div>
+    <div class="track"><div id="bar"></div></div>
+    <div id="theme"></div>
+    <h2 id="q" class="big"></h2>
+    <div id="vis" class="hidden"></div>
+    <div class="opts" id="opts"></div>
+    <div class="row">
+      <button class="btn ghost" id="prev">Sebelumnya</button>
+      <button class="btn ghost" id="nxt">Berikutnya</button>
+      <button class="btn" id="submit">Kumpulkan</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="end" class="hidden">
+    <h1 style="font-size:clamp(2.4rem,12vw,4rem)">Kuis dikumpulkan</h1>
+    <p id="sum"></p>
+    <div class="big score" id="final"></div>
+    <p id="detail"></p>
+    <div id="review"></div>
+    <div class="row"><button class="btn" id="again">Main lagi</button></div>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
