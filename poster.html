@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poster Pemenang THINK FAST!!!</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap");
+:root{
+  --bg:#e7e3ff;--ink:#272557;--soft:#5d5a8f;--tint:#f3f0ff;--edge:#d8d2ff;
+  --violet:#6a58f0;--pink:#ff7a9a;--sun:#ffd66b;--mint:#7fe0b9;
+  --display:"Fredoka",ui-rounded,system-ui,sans-serif;--body:"Nunito",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+body{min-height:100vh;padding:24px 16px 48px;background:#f4f2ff;color:var(--ink);font-family:var(--body)}
+:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+
+/* Panel isian */
+.panel{max-width:560px;margin:0 auto 28px;padding:22px;background:#fff;border-radius:22px;box-shadow:0 20px 40px -26px rgba(39,37,87,.45)}
+.panel h2{font-family:var(--display);font-size:1.4rem;margin-bottom:14px}
+.panel label{display:block;margin:12px 0 6px;font-weight:700;color:var(--soft);font-size:.92rem}
+.panel input{width:100%;font:700 1.05rem var(--body);padding:12px 14px;color:var(--ink);border:2px solid var(--edge);border-radius:14px}
+.panel input:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 4px rgba(106,88,240,.2)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{margin-top:18px;font:700 1rem var(--body);border:0;border-radius:999px;padding:14px 24px;cursor:pointer;background:var(--ink);color:#fff}
+.btn:hover{filter:brightness(1.2)}
+
+/* Poster */
+.poster{
+  container-type:inline-size;position:relative;overflow:hidden;
+  width:100%;max-width:560px;aspect-ratio:1/1.414;margin:0 auto;
+  background:var(--bg);border-radius:20px;padding:6cqw;display:flex;
+  box-shadow:0 24px 44px -26px rgba(39,37,87,.5);
+}
+.poster::before,.poster::after{content:"";position:absolute;border-radius:50%}
+.poster::before{width:60%;aspect-ratio:1;top:-18%;right:-20%;background:#ffe9a8}
+.poster::after{width:50%;aspect-ratio:1;bottom:-16%;left:-18%;background:#c9f2e1}
+.sheet{
+  position:relative;z-index:1;flex:1;border-radius:5cqw;padding:7cqw 7cqw 7cqw 15cqw;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:3.4cqw;
+  background-color:#fff;background-image:radial-gradient(circle,#dcd7ff 1.2px,transparent 1.7px);
+  background-size:5cqw 5cqw;
+}
+.sheet::before{
+  content:"";position:absolute;left:3.6cqw;top:6cqw;bottom:6cqw;width:4.4cqw;
+  background:radial-gradient(circle,var(--bg) 0 1.2cqw,var(--ink) 1.2cqw 1.6cqw,transparent 1.6cqw) 0 0/4.4cqw 7.6cqw repeat-y;
+}
+.edisi{font-weight:700;font-size:3.6cqw;padding:1cqw 3.6cqw;border-radius:999px;background:var(--tint);color:var(--soft);box-shadow:inset 0 0 0 .5cqw var(--edge)}
+h1{
+  font-family:var(--display);font-weight:700;font-size:14cqw;line-height:1.05;
+  text-decoration:underline wavy var(--pink);text-decoration-thickness:1.1cqw;text-underline-offset:2cqw;text-decoration-skip-ink:none;
+}
+.label{font-family:var(--display);font-weight:600;font-size:5.4cqw;color:var(--soft);margin-top:2cqw}
+.nama{font-family:var(--display);font-weight:700;line-height:1.1;font-size:10cqw;overflow-wrap:anywhere;max-width:100%}
+.stamp{
+  position:absolute;right:6cqw;bottom:13cqw;width:30cqw;aspect-ratio:1;border-radius:50%;
+  display:grid;place-content:center;text-align:center;transform:rotate(-8deg);
+  background:var(--sun);border:.9cqw solid var(--ink);outline:.7cqw dashed var(--ink);outline-offset:1.4cqw;
+}
+.stamp span{font-family:var(--display);font-weight:700;font-size:12cqw;line-height:1}
+.stamp small{font-weight:700;font-size:3.4cqw}
+.foot{position:absolute;left:15cqw;bottom:7cqw;font-weight:700;font-size:3.6cqw;color:var(--soft)}
+
+@media print{
+  @page{size:A4;margin:10mm}
+  body{background:#fff;padding:0}
+  .panel{display:none}
+  .poster{max-width:none;width:190mm;margin:0;border-radius:0;box-shadow:none}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<div class="panel">
+  <h2>Poster pemenang</h2>
+  <label for="f-nama">Nama pemenang</label>
+  <input id="f-nama" type="text" maxlength="40" value="Nama Pemenang">
+  <div class="two">
+    <div><label for="f-skor">Skor</label><input id="f-skor" type="text" inputmode="numeric" maxlength="3" value="100"></div>
+    <div><label for="f-edisi">Edisi</label><input id="f-edisi" type="text" maxlength="20" value="Edisi 1"></div>
+  </div>
+  <label for="f-tgl">Tanggal</label>
+  <input id="f-tgl" type="text" maxlength="30">
+  <button class="btn" id="cetak">Cetak atau simpan PDF</button>
+</div>
+
+<div class="poster">
+  <div class="sheet">
+    <div class="edisi" id="p-edisi"></div>
+    <h1>THINK<br>FAST!!!</h1>
+    <div class="label">🏆 Pemenang</div>
+    <div class="nama" id="p-nama"></div>
+    <div class="stamp"><span id="p-skor"></span><small>skor</small></div>
+    <div class="foot" id="p-tgl"></div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+$("f-tgl").value = new Date().toLocaleDateString("id-ID", {day:"numeric", month:"long", year:"numeric"});
+
+function update(){
+  const nama = $("f-nama").value.trim() || "Nama Pemenang";
+  $("p-nama").textContent = nama;
+  // nama panjang dikecilkan supaya muat
+  $("p-nama").style.fontSize = (nama.length <= 12 ? 10 : nama.length <= 20 ? 7.5 : 5.8) + "cqw";
+  $("p-skor").textContent = $("f-skor").value.trim() || "0";
+  $("p-edisi").textContent = $("f-edisi").value.trim() || "Edisi";
+  $("p-tgl").textContent = $("f-tgl").value.trim();
+}
+["f-nama","f-skor","f-edisi","f-tgl"].forEach(id => $(id).addEventListener("input", update));
+$("cetak").onclick = () => window.print();
+// Isi otomatis dari link tombol "Buat poster" di halaman hasil kuis
+const q = new URLSearchParams(location.search);
+if (q.get("nama")) $("f-nama").value = q.get("nama").slice(0, 40);
+if (/^\d{1,3}$/.test(q.get("skor") || "")) $("f-skor").value = q.get("skor");
+update();
+</script>
+</body>
+</html>
