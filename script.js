@@ -1,25 +1,16 @@
 const SUPABASE_URL = "https://ilevxvbgyeobovtvvvwp.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsZXZ4dmJneWVvYm92dHZ2dndwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2NzA2NjQsImV4cCI6MjEwODI0NjY2NH0.UvXKtjam2A44R8002Ge1AMXueo_rSxC_HRaxHlzLopU";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsZXZ4dmJneWVvYm92dHZ2dndwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2NzA2NjQsImV4cCI6MjEwODI0NjY0fQ.UvXKtjam2A44R8002Ge1AMXueo_rSxC_HRaxHlzLopU";
 
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
+let supabaseClient = null;
 
 /* =========================================================
    THINK FAST!!!
-   FULL SCRIPT
+   FIXED SCRIPT
    PG + ISIAN + LENGKAPIN HURUF
    TIMER + RANKING + REVIEW
    AUTO CHECK + AUTO NEXT
    LOCK JAWABAN
-========================================================= */
-
-
-/* =========================================================
-   DATA SOAL
-========================================================= */
+   ========================================================= */
 
 const QUIZ = [
 
@@ -29,12 +20,7 @@ const QUIZ = [
     theme: "Pengetahuan Umum",
     type: "pg",
     q: "Apa ibu kota Australia?",
-    options: [
-      "Sydney",
-      "Melbourne",
-      "Canberra",
-      "Perth"
-    ],
+    options: ["Sydney", "Melbourne", "Canberra", "Perth"],
     answer: "Canberra",
     explanation: "Canberra adalah ibu kota Australia."
   },
@@ -43,12 +29,7 @@ const QUIZ = [
     theme: "Teka-teki Visual",
     type: "pg",
     q: "Jika pola berikut adalah ▲ ● ▲ ● ▲ ..., bentuk berikutnya adalah?",
-    options: [
-      "▲",
-      "●",
-      "■",
-      "★"
-    ],
+    options: ["▲", "●", "■", "★"],
     answer: "●",
     explanation: "Polanya bergantian antara ▲ dan ●."
   },
@@ -71,12 +52,7 @@ const QUIZ = [
     theme: "Sekolah",
     type: "pg",
     q: "Berapa hasil dari 12 × 5?",
-    options: [
-      "50",
-      "55",
-      "60",
-      "65"
-    ],
+    options: ["50", "55", "60", "65"],
     answer: "60",
     explanation: "12 × 5 = 60."
   },
@@ -99,12 +75,7 @@ const QUIZ = [
     theme: "Pengetahuan Umum",
     type: "pg",
     q: "Planet terbesar dalam tata surya adalah...",
-    options: [
-      "Bumi",
-      "Mars",
-      "Jupiter",
-      "Saturnus"
-    ],
+    options: ["Bumi", "Mars", "Jupiter", "Saturnus"],
     answer: "Jupiter",
     explanation: "Jupiter merupakan planet terbesar di tata surya."
   },
@@ -113,12 +84,7 @@ const QUIZ = [
     theme: "Teka-teki Visual",
     type: "pg",
     q: "Apel, jeruk, apel, jeruk, apel, ... Apa berikutnya?",
-    options: [
-      "Apel",
-      "Jeruk",
-      "Pisang",
-      "Mangga"
-    ],
+    options: ["Apel", "Jeruk", "Pisang", "Mangga"],
     answer: "Jeruk",
     explanation: "Polanya bergantian antara apel dan jeruk."
   },
@@ -127,12 +93,7 @@ const QUIZ = [
     theme: "Digital",
     type: "pg",
     q: "Bahasa yang digunakan untuk membuat struktur halaman web adalah...",
-    options: [
-      "HTML",
-      "CSS",
-      "JavaScript",
-      "Python"
-    ],
+    options: ["HTML", "CSS", "JavaScript", "Python"],
     answer: "HTML",
     explanation: "HTML digunakan untuk membuat struktur halaman web."
   },
@@ -141,12 +102,7 @@ const QUIZ = [
     theme: "Sekolah",
     type: "pg",
     q: "Berapa jumlah sisi pada segitiga?",
-    options: [
-      "2",
-      "3",
-      "4",
-      "5"
-    ],
+    options: ["2", "3", "4", "5"],
     answer: "3",
     explanation: "Segitiga memiliki tiga sisi."
   },
@@ -155,12 +111,7 @@ const QUIZ = [
     theme: "Logika",
     type: "pg",
     q: "Jika hari ini Senin, maka 3 hari lagi adalah...",
-    options: [
-      "Selasa",
-      "Rabu",
-      "Kamis",
-      "Jumat"
-    ],
+    options: ["Selasa", "Rabu", "Kamis", "Jumat"],
     answer: "Kamis",
     explanation: "Senin → Selasa → Rabu → Kamis."
   },
@@ -169,12 +120,7 @@ const QUIZ = [
     theme: "Pengetahuan Umum",
     type: "pg",
     q: "Hewan yang dikenal sebagai raja hutan adalah...",
-    options: [
-      "Harimau",
-      "Singa",
-      "Serigala",
-      "Beruang"
-    ],
+    options: ["Harimau", "Singa", "Serigala", "Beruang"],
     answer: "Singa",
     explanation: "Singa sering disebut sebagai raja hutan."
   },
@@ -183,12 +129,7 @@ const QUIZ = [
     theme: "Teka-teki Visual",
     type: "pg",
     q: "Jika 2 + 2 = 4 dan 4 + 4 = 8, maka 8 + 8 = ...",
-    options: [
-      "12",
-      "14",
-      "16",
-      "18"
-    ],
+    options: ["12", "14", "16", "18"],
     answer: "16",
     explanation: "8 + 8 = 16."
   },
@@ -225,12 +166,7 @@ const QUIZ = [
     theme: "Logika",
     type: "pg",
     q: "Mana yang berbeda dari yang lainnya?",
-    options: [
-      "2",
-      "4",
-      "6",
-      "9"
-    ],
+    options: ["2", "4", "6", "9"],
     answer: "9",
     explanation: "2, 4, dan 6 adalah bilangan genap, sedangkan 9 adalah bilangan ganjil."
   },
@@ -326,11 +262,12 @@ const QUIZ = [
 
 /* =========================================================
    STATE
-========================================================= */
+   ========================================================= */
 
 let qs = [];
 let answers = [];
 let locked = [];
+
 let cur = 0;
 
 let participantName = "";
@@ -344,10 +281,12 @@ let autoNextTimer = null;
 
 let finished = false;
 
+const RANKING_LIMIT = 100;
+
 
 /* =========================================================
    HELPER
-========================================================= */
+   ========================================================= */
 
 function $(id) {
   return document.getElementById(id);
@@ -363,13 +302,10 @@ function normalizeAnswer(value) {
 
 
 function shuffle(array) {
-
   const copy = [...array];
 
   for (let i = copy.length - 1; i > 0; i--) {
-
-    const j =
-      Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(Math.random() * (i + 1));
 
     [copy[i], copy[j]] =
       [copy[j], copy[i]];
@@ -380,7 +316,6 @@ function shuffle(array) {
 
 
 function fmt(ms) {
-
   const total =
     Math.max(0, Math.floor(ms / 1000));
 
@@ -394,9 +329,19 @@ function fmt(ms) {
 }
 
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
 /* =========================================================
    SHOW SECTION
-========================================================= */
+   ========================================================= */
 
 function show(id) {
 
@@ -415,12 +360,49 @@ function show(id) {
 
 
 /* =========================================================
-   RANKING GLOBAL SUPABASE
-========================================================= */
+   SUPABASE
+   ========================================================= */
 
-const RANKING_LIMIT = 100;
+function initSupabase() {
+
+  if (
+    window.supabase &&
+    typeof window.supabase.createClient === "function"
+  ) {
+
+    supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+    console.log(
+      "Supabase berhasil terhubung."
+    );
+
+  } else {
+
+    console.error(
+      "Supabase CDN belum tersedia."
+    );
+
+  }
+}
+
+
+/* =========================================================
+   SAVE RANKING
+   ========================================================= */
 
 async function saveRanking(entry) {
+
+  if (!supabaseClient) {
+    console.error(
+      "Supabase client belum siap."
+    );
+
+    return false;
+  }
 
   try {
 
@@ -428,70 +410,134 @@ async function saveRanking(entry) {
       await supabaseClient
         .from("think_fast_ranking")
         .insert({
-          name: String(entry.name || "").trim().slice(0, 40),
-          score: Number(entry.score) || 0,
-          correct: Number(entry.correct) || 0,
-          wrong: Number(entry.wrong) || 0,
-          empty: Number(entry.empty) || 0,
-          time_seconds: Math.max(
-            0,
-            Math.floor((Number(entry.time) || 0) / 1000)
-          )
+          name:
+            String(
+              entry.name || ""
+            )
+              .trim()
+              .slice(0, 40),
+
+          score:
+            Number(entry.score) || 0,
+
+          correct:
+            Number(entry.correct) || 0,
+
+          wrong:
+            Number(entry.wrong) || 0,
+
+          empty:
+            Number(entry.empty) || 0,
+
+          time_seconds:
+            Math.max(
+              0,
+              Math.floor(
+                (Number(entry.time) || 0) / 1000
+              )
+            )
         });
 
     if (error) {
-      console.error("Gagal menyimpan ranking Supabase:", error);
+
+      console.error(
+        "Gagal menyimpan ranking Supabase:",
+        error
+      );
+
       return false;
     }
 
-    console.log("Ranking berhasil disimpan ke Supabase.");
+    console.log(
+      "Ranking berhasil disimpan ke Supabase."
+    );
+
     return true;
 
   } catch (error) {
 
-    console.error("Supabase ranking error:", error);
-    return false;
+    console.error(
+      "Supabase ranking error:",
+      error
+    );
 
+    return false;
   }
 }
 
 
+/* =========================================================
+   GET RANKING
+   ========================================================= */
+
 async function getRanking() {
+
+  if (!supabaseClient) {
+
+    console.error(
+      "Supabase client belum siap."
+    );
+
+    return [];
+  }
 
   try {
 
     const { data, error } =
       await supabaseClient
         .from("think_fast_ranking")
-        .select("id,name,score,correct,wrong,empty,time_seconds,created_at")
-        .order("score", { ascending: false })
-        .order("time_seconds", { ascending: true })
+        .select(
+          "id,name,score,correct,wrong,empty,time_seconds,created_at"
+        )
+        .order(
+          "score",
+          {
+            ascending: false
+          }
+        )
+        .order(
+          "time_seconds",
+          {
+            ascending: true
+          }
+        )
         .limit(RANKING_LIMIT);
 
     if (error) {
-      console.error("Gagal mengambil ranking Supabase:", error);
+
+      console.error(
+        "Gagal mengambil ranking Supabase:",
+        error
+      );
+
       return [];
     }
 
-    return Array.isArray(data) ? data : [];
+    return Array.isArray(data)
+      ? data
+      : [];
 
   } catch (error) {
 
-    console.error("Supabase ranking error:", error);
-    return [];
+    console.error(
+      "Supabase ranking error:",
+      error
+    );
 
+    return [];
   }
 }
 
 
 /* =========================================================
    START
-========================================================= */
+   ========================================================= */
 
 function start(minutes) {
 
   participantName =
-    ($("nama")?.value || "").trim();
+    ($("nama")?.value || "")
+      .trim();
 
   if (!participantName) {
 
@@ -505,6 +551,7 @@ function start(minutes) {
     return;
   }
 
+
   if (!minutes) {
 
     if ($("err")) {
@@ -515,10 +562,15 @@ function start(minutes) {
     return;
   }
 
-  selectedMinutes = Number(minutes);
+
+  selectedMinutes =
+    Number(minutes);
 
   totalMs =
-    selectedMinutes * 60 * 1000;
+    selectedMinutes *
+    60 *
+    1000;
+
 
   qs =
     shuffle(QUIZ).map(question => {
@@ -528,35 +580,49 @@ function start(minutes) {
       };
 
       if (copy.type === "pg") {
-        copy.options = shuffle(copy.options);
+        copy.options =
+          shuffle(copy.options);
       }
 
       return copy;
 
     });
 
+
   answers =
-    new Array(qs.length).fill(null);
+    new Array(qs.length)
+      .fill(null);
 
   locked =
-    new Array(qs.length).fill(false);
+    new Array(qs.length)
+      .fill(false);
 
   cur = 0;
+
   finished = false;
 
-  startedAt = Date.now();
+  startedAt =
+    Date.now();
+
 
   if (autoNextTimer) {
 
-    clearTimeout(autoNextTimer);
-    autoNextTimer = null;
+    clearTimeout(
+      autoNextTimer
+    );
 
+    autoNextTimer = null;
   }
+
 
   clearInterval(tick);
 
   tick =
-    setInterval(updateTimer, 250);
+    setInterval(
+      updateTimer,
+      250
+    );
+
 
   updateTimer();
 
@@ -564,29 +630,41 @@ function start(minutes) {
 
   render();
 
-  window.scrollTo(0, 0);
+  window.scrollTo(
+    0,
+    0
+  );
 }
 
 
 /* =========================================================
    TIMER
-========================================================= */
+   ========================================================= */
 
 function updateTimer() {
 
-  if (finished) return;
+  if (finished) {
+    return;
+  }
 
   const elapsed =
     Date.now() - startedAt;
 
   const remaining =
-    Math.max(0, totalMs - elapsed);
+    Math.max(
+      0,
+      totalMs - elapsed
+    );
 
-  const timer = $("timer");
+
+  const timer =
+    $("timer");
 
   if (timer) {
-    timer.textContent = fmt(remaining);
+    timer.textContent =
+      fmt(remaining);
   }
+
 
   if (remaining <= 0) {
     finish(true);
@@ -596,153 +674,242 @@ function updateTimer() {
 
 /* =========================================================
    GRID
-========================================================= */
+   ========================================================= */
 
 function renderGrid() {
 
-  const grid = $("grid");
+  const grid =
+    $("grid");
 
-  if (!grid) return;
+  if (!grid) {
+    return;
+  }
 
   grid.innerHTML = "";
 
-  qs.forEach((question, index) => {
 
-    const button =
-      document.createElement("button");
+  qs.forEach(
+    (question, index) => {
 
-    button.type = "button";
-    button.className = "dot";
-    button.textContent = index + 1;
+      const button =
+        document.createElement(
+          "button"
+        );
 
-    if (index === cur) {
-      button.classList.add("cur");
+      button.type =
+        "button";
+
+      button.className =
+        "dot";
+
+      button.textContent =
+        index + 1;
+
+
+      if (index === cur) {
+        button.classList.add(
+          "cur"
+        );
+      }
+
+
+      if (locked[index]) {
+
+        button.classList.add(
+          "done"
+        );
+
+        button.classList.add(
+          "locked"
+        );
+      }
+
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          if (autoNextTimer) {
+            return;
+          }
+
+          cur = index;
+
+          render();
+
+          window.scrollTo(
+            0,
+            0
+          );
+
+        }
+      );
+
+
+      grid.appendChild(
+        button
+      );
+
     }
-
-    if (locked[index]) {
-      button.classList.add("done");
-      button.classList.add("locked");
-    }
-
-    button.addEventListener("click", () => {
-
-      if (autoNextTimer) return;
-
-      cur = index;
-
-      render();
-
-      window.scrollTo(0, 0);
-
-    });
-
-    grid.appendChild(button);
-
-  });
+  );
 }
 
 
 /* =========================================================
    RENDER
-========================================================= */
+   ========================================================= */
 
 function render() {
 
-  const question = qs[cur];
+  const question =
+    qs[cur];
 
-  if (!question) return;
+  if (!question) {
+    return;
+  }
+
 
   if ($("no")) {
     $("no").textContent =
       `Soal ${cur + 1} / ${qs.length}`;
   }
 
+
   if ($("theme")) {
     $("theme").textContent =
       question.theme;
   }
+
 
   if ($("q")) {
     $("q").textContent =
       question.q;
   }
 
+
   if ($("vis")) {
-    $("vis").classList.add("hidden");
+    $("vis").classList.add(
+      "hidden"
+    );
   }
 
-  const opts = $("opts");
 
-  if (!opts) return;
+  const opts =
+    $("opts");
+
+  if (!opts) {
+    return;
+  }
 
   opts.innerHTML = "";
 
 
   /* =====================================================
      PILIHAN GANDA
-  ===================================================== */
+     ===================================================== */
 
   if (question.type === "pg") {
 
-    question.options.forEach(option => {
+    question.options.forEach(
+      option => {
 
-      const button =
-        document.createElement("button");
+        const button =
+          document.createElement(
+            "button"
+          );
 
-      button.type = "button";
-      button.className = "opt";
-      button.textContent = option;
+        button.type =
+          "button";
 
-      if (
-        normalizeAnswer(answers[cur]) ===
-        normalizeAnswer(option)
-      ) {
-        button.classList.add("sel");
-      }
+        button.className =
+          "opt";
 
-      if (locked[cur]) {
+        button.textContent =
+          option;
 
-        button.disabled = true;
-        button.style.cursor = "not-allowed";
-        button.style.pointerEvents = "none";
-
-        button.style.opacity =
-          normalizeAnswer(answers[cur]) ===
-          normalizeAnswer(option)
-            ? "1"
-            : ".55";
-      }
-
-      button.addEventListener("click", () => {
 
         if (
-          autoNextTimer ||
-          locked[cur]
+          normalizeAnswer(
+            answers[cur]
+          ) ===
+          normalizeAnswer(
+            option
+          )
         ) {
-          return;
+
+          button.classList.add(
+            "sel"
+          );
         }
 
-        answers[cur] = option;
-        locked[cur] = true;
 
-        render();
+        if (locked[cur]) {
 
-        advanceAfterAnswer();
+          button.disabled =
+            true;
 
-      });
+          button.style.cursor =
+            "not-allowed";
 
-      opts.appendChild(button);
+          button.style.pointerEvents =
+            "none";
 
-    });
+          button.style.opacity =
+            normalizeAnswer(
+              answers[cur]
+            ) ===
+            normalizeAnswer(
+              option
+            )
+              ? "1"
+              : ".55";
+        }
+
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            if (
+              autoNextTimer ||
+              locked[cur]
+            ) {
+              return;
+            }
+
+
+            answers[cur] =
+              option;
+
+            locked[cur] =
+              true;
+
+
+            render();
+
+            advanceAfterAnswer();
+
+          }
+        );
+
+
+        opts.appendChild(
+          button
+        );
+
+      }
+    );
 
   }
 
 
   /* =====================================================
      ISIAN
-  ===================================================== */
+     ===================================================== */
 
-  else if (question.type === "isian") {
+  else if (
+    question.type === "isian"
+  ) {
 
     renderInputQuestion(
       question,
@@ -753,10 +920,12 @@ function render() {
 
 
   /* =====================================================
-     LENGKAPIN
-  ===================================================== */
+     LENGKAP
+     ===================================================== */
 
-  else if (question.type === "lengkap") {
+  else if (
+    question.type === "lengkap"
+  ) {
 
     renderInputQuestion(
       question,
@@ -765,89 +934,104 @@ function render() {
 
   }
 
+
   renderGrid();
 
-
-  /* =====================================================
-     FEEDBACK
-  ===================================================== */
 
   if (
     answers[cur] !== null &&
     answers[cur] !== undefined &&
-    normalizeAnswer(answers[cur]) !== ""
+    normalizeAnswer(
+      answers[cur]
+    ) !== ""
   ) {
 
     showAnswerFeedback(
       question,
       answers[cur]
     );
-
   }
 }
 
 
 /* =========================================================
-   INPUT ISIAN / LENGKAP
-========================================================= */
+   INPUT QUESTION
+   ========================================================= */
 
-function renderInputQuestion(question, placeholder) {
+function renderInputQuestion(
+  question,
+  placeholder
+) {
 
-  const opts = $("opts");
+  const opts =
+    $("opts");
 
-  if (!opts) return;
+  if (!opts) {
+    return;
+  }
+
 
   opts.innerHTML = "";
 
+
   const wrapper =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   wrapper.style.cssText = `
-    width: 100%;
-    display: block;
-    position: relative;
-    z-index: 9999;
-    pointer-events: auto;
+    width:100%;
+    display:block;
+    position:relative;
+    z-index:9999;
+    pointer-events:auto;
   `;
 
+
   const label =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   label.textContent =
     "Ketik jawaban kamu:";
 
   label.style.cssText = `
-    display: block;
-    color: #fff;
-    font-size: 16px;
-    margin-bottom: 10px;
-    pointer-events: none;
+    display:block;
+    color:#fff;
+    font-size:16px;
+    margin-bottom:10px;
+    pointer-events:none;
   `;
 
+
   const input =
-    document.createElement("input");
+    document.createElement(
+      "input"
+    );
 
-  input.type = "text";
-  input.className = "quiz-input";
+  input.type =
+    "text";
 
-  input.setAttribute(
-    "autocomplete",
-    "off"
-  );
+  input.className =
+    "quiz-input";
 
-  input.setAttribute(
-    "spellcheck",
-    "false"
-  );
+  input.autocomplete =
+    "off";
+
+  input.spellcheck =
+    false;
 
   input.placeholder =
-    placeholder || "Tulis jawaban...";
+    placeholder ||
+    "Tulis jawaban...";
 
   input.value =
     answers[cur] || "";
 
   input.readOnly =
     locked[cur] === true;
+
 
   input.style.setProperty(
     "display",
@@ -960,9 +1144,11 @@ function renderInputQuestion(question, placeholder) {
 
   input.addEventListener(
     "input",
-    function () {
+    () => {
 
-      if (locked[cur]) return;
+      if (locked[cur]) {
+        return;
+      }
 
       answers[cur] =
         input.value;
@@ -973,48 +1159,68 @@ function renderInputQuestion(question, placeholder) {
 
   input.addEventListener(
     "keydown",
-    function (e) {
+    event => {
 
-      if (e.key !== "Enter") {
+      if (
+        event.key !== "Enter"
+      ) {
         return;
       }
 
-      e.preventDefault();
+      event.preventDefault();
 
-      if (locked[cur]) {
+
+      if (
+        locked[cur] ||
+        autoNextTimer
+      ) {
         return;
       }
 
-      if (autoNextTimer) {
-        return;
-      }
 
       const value =
-        normalizeAnswer(input.value);
+        normalizeAnswer(
+          input.value
+        );
+
 
       if (!value) {
         return;
       }
 
+
       answers[cur] =
         input.value;
 
-      locked[cur] = true;
+      locked[cur] =
+        true;
+
 
       render();
 
-      setTimeout(() => {
-        advanceAfterAnswer();
-      }, 800);
+
+      setTimeout(
+        () => {
+          advanceAfterAnswer();
+        },
+        800
+      );
 
     }
   );
 
 
-  wrapper.appendChild(label);
-  wrapper.appendChild(input);
+  wrapper.appendChild(
+    label
+  );
 
-  opts.appendChild(wrapper);
+  wrapper.appendChild(
+    input
+  );
+
+  opts.appendChild(
+    wrapper
+  );
 
 
   opts.style.setProperty(
@@ -1038,103 +1244,40 @@ function renderInputQuestion(question, placeholder) {
 
   if (!locked[cur]) {
 
-    setTimeout(() => {
+    setTimeout(
+      () => {
 
-      if (document.body.contains(input)) {
+        if (
+          document.body.contains(
+            input
+          )
+        ) {
 
-        input.focus();
+          input.focus();
 
-        input.setSelectionRange(
-          input.value.length,
-          input.value.length
-        );
+          input.setSelectionRange(
+            input.value.length,
+            input.value.length
+          );
 
-      }
+        }
 
-    }, 100);
+      },
+      100
+    );
 
   }
 }
 
 
 /* =========================================================
-   INPUT STYLE
-========================================================= */
+   ANSWER CHECK
+   ========================================================= */
 
-function addInputStyles() {
-
-  if (
-    document.getElementById(
-      "thinkFastInputStyles"
-    )
-  ) {
-    return;
-  }
-
-  const style =
-    document.createElement("style");
-
-  style.id =
-    "thinkFastInputStyles";
-
-  style.textContent = `
-
-    .input-answer-wrap {
-      width: 100%;
-      margin-top: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .input-answer-label {
-      font-size: 14px;
-      font-weight: 700;
-      opacity: .8;
-    }
-
-    .quiz-input {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 16px 18px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-      color: #fff;
-      outline: none;
-      font-size: 17px;
-      font-family: inherit;
-      transition: .2s ease;
-    }
-
-    .quiz-input::placeholder {
-      color: rgba(255,255,255,.42);
-    }
-
-    .quiz-input:focus {
-      border-color: rgba(255,255,255,.55);
-      background: rgba(255,255,255,.08);
-      box-shadow:
-        0 0 0 3px
-        rgba(255,255,255,.06);
-    }
-
-    .quiz-input:disabled {
-      opacity: .7;
-      cursor: not-allowed;
-    }
-
-  `;
-
-  document.head.appendChild(style);
-}
-
-
-/* =========================================================
-   CHECK ANSWER
-========================================================= */
-
-function isRight(question, answer) {
+function isRight(
+  question,
+  answer
+) {
 
   if (
     !question ||
@@ -1144,15 +1287,25 @@ function isRight(question, answer) {
     return false;
   }
 
+
   const user =
-    normalizeAnswer(answer);
+    normalizeAnswer(
+      answer
+    );
 
   const correct =
-    normalizeAnswer(question.answer);
+    normalizeAnswer(
+      question.answer
+    );
 
-  if (!user || !correct) {
+
+  if (
+    !user ||
+    !correct
+  ) {
     return false;
   }
+
 
   return user === correct;
 }
@@ -1160,7 +1313,7 @@ function isRight(question, answer) {
 
 /* =========================================================
    AUTO NEXT
-========================================================= */
+   ========================================================= */
 
 function advanceAfterAnswer() {
 
@@ -1168,69 +1321,101 @@ function advanceAfterAnswer() {
     return;
   }
 
+
   autoNextTimer =
-    setTimeout(() => {
+    setTimeout(
+      () => {
 
-      autoNextTimer = null;
+        autoNextTimer =
+          null;
 
-      if (finished) {
-        return;
-      }
 
-      if (cur < qs.length - 1) {
+        if (finished) {
+          return;
+        }
 
-        cur++;
 
-        render();
+        if (
+          cur <
+          qs.length - 1
+        ) {
 
-        window.scrollTo(0, 0);
+          cur++;
 
-      } else {
+          render();
 
-        finish(false);
+          window.scrollTo(
+            0,
+            0
+          );
 
-      }
+        } else {
 
-    }, 800);
+          finish(false);
+
+        }
+
+      },
+      800
+    );
 }
 
 
 /* =========================================================
    FEEDBACK
-========================================================= */
+   ========================================================= */
 
-function showAnswerFeedback(question, answer) {
+function showAnswerFeedback(
+  question,
+  answer
+) {
 
-  const opts = $("opts");
+  const opts =
+    $("opts");
 
-  if (!opts || !question) {
+  if (
+    !opts ||
+    !question
+  ) {
     return;
   }
+
 
   const old =
     opts.querySelector(
       ".answer-feedback"
     );
 
+
   if (old) {
     old.remove();
   }
 
+
   const feedback =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   feedback.className =
     "answer-feedback";
 
 
-  if (isRight(question, answer)) {
+  if (
+    isRight(
+      question,
+      answer
+    )
+  ) {
 
     feedback.innerHTML = `
       <strong>✓ BENAR!</strong>
       <span>Jawaban kamu tepat.</span>
     `;
 
-    feedback.classList.add("correct");
+    feedback.classList.add(
+      "correct"
+    );
 
   } else {
 
@@ -1238,39 +1423,29 @@ function showAnswerFeedback(question, answer) {
       <strong>✗ SALAH!</strong>
       <span>
         Jawaban yang benar:
-        <b>${escapeHtml(question.answer)}</b>
+        <b>${escapeHtml(
+          question.answer
+        )}</b>
       </span>
     `;
 
-    feedback.classList.add("wrong");
-
+    feedback.classList.add(
+      "wrong"
+    );
   }
 
-  opts.appendChild(feedback);
+
+  opts.appendChild(
+    feedback
+  );
 
   addFeedbackStyles();
 }
 
 
 /* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHtml(value) {
-
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-/* =========================================================
    FEEDBACK STYLE
-========================================================= */
+   ========================================================= */
 
 function addFeedbackStyles() {
 
@@ -1282,33 +1457,37 @@ function addFeedbackStyles() {
     return;
   }
 
+
   const style =
-    document.createElement("style");
+    document.createElement(
+      "style"
+    );
 
   style.id =
     "thinkFastFeedbackStyles";
 
+
   style.textContent = `
 
     .answer-feedback {
-      width: 100%;
-      box-sizing: border-box;
-      margin-top: 16px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      font-size: 15px;
-      line-height: 1.45;
+      width:100%;
+      box-sizing:border-box;
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:14px;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      font-size:15px;
+      line-height:1.45;
       animation:
         thinkFastFeedbackIn
         .2s ease;
     }
 
     .answer-feedback strong {
-      font-size: 18px;
-      letter-spacing: .4px;
+      font-size:18px;
+      letter-spacing:.4px;
     }
 
     .answer-feedback.correct {
@@ -1330,32 +1509,108 @@ function addFeedbackStyles() {
     @keyframes thinkFastFeedbackIn {
 
       from {
-        opacity: 0;
-        transform: translateY(5px);
+        opacity:0;
+        transform:translateY(5px);
       }
 
       to {
-        opacity: 1;
-        transform: translateY(0);
+        opacity:1;
+        transform:translateY(0);
       }
 
     }
 
   `;
 
-  document.head.appendChild(style);
+
+  document.head.appendChild(
+    style
+  );
+}
+
+
+/* =========================================================
+   INPUT STYLE
+   ========================================================= */
+
+function addInputStyles() {
+
+  if (
+    document.getElementById(
+      "thinkFastInputStyles"
+    )
+  ) {
+    return;
+  }
+
+
+  const style =
+    document.createElement(
+      "style"
+    );
+
+  style.id =
+    "thinkFastInputStyles";
+
+
+  style.textContent = `
+
+    .quiz-input {
+      width:100%;
+      box-sizing:border-box;
+      padding:16px 18px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.05);
+      color:#fff;
+      outline:none;
+      font-size:17px;
+      font-family:inherit;
+      transition:.2s ease;
+    }
+
+    .quiz-input::placeholder {
+      color:rgba(255,255,255,.42);
+    }
+
+    .quiz-input:focus {
+      border-color:
+        rgba(255,255,255,.55);
+
+      background:
+        rgba(255,255,255,.08);
+
+      box-shadow:
+        0 0 0 3px
+        rgba(255,255,255,.06);
+    }
+
+    .quiz-input:disabled {
+      opacity:.7;
+      cursor:not-allowed;
+    }
+
+  `;
+
+
+  document.head.appendChild(
+    style
+  );
 }
 
 
 /* =========================================================
    FINISH
-========================================================= */
+   ========================================================= */
 
-async function finish(auto = false) {
+async function finish(
+  auto = false
+) {
 
   if (finished) {
     return;
   }
+
 
   if (!auto) {
 
@@ -1369,15 +1624,20 @@ async function finish(auto = false) {
     }
   }
 
+
   finished = true;
+
 
   if (autoNextTimer) {
 
-    clearTimeout(autoNextTimer);
+    clearTimeout(
+      autoNextTimer
+    );
 
-    autoNextTimer = null;
-
+    autoNextTimer =
+      null;
   }
+
 
   clearInterval(tick);
 
@@ -1387,48 +1647,58 @@ async function finish(auto = false) {
   let empty = 0;
 
 
-  qs.forEach((question, index) => {
+  qs.forEach(
+    (question, index) => {
 
-    const answer =
-      answers[index];
+      const answer =
+        answers[index];
 
-    if (
-      answer === null ||
-      answer === undefined ||
-      normalizeAnswer(answer) === ""
-    ) {
 
-      empty++;
+      if (
+        answer === null ||
+        answer === undefined ||
+        normalizeAnswer(
+          answer
+        ) === ""
+      ) {
+
+        empty++;
+
+      }
+
+      else if (
+        isRight(
+          question,
+          answer
+        )
+      ) {
+
+        correct++;
+
+      }
+
+      else {
+
+        wrong++;
+
+      }
 
     }
-
-    else if (
-      isRight(question, answer)
-    ) {
-
-      correct++;
-
-    }
-
-    else {
-
-      wrong++;
-
-    }
-
-  });
+  );
 
 
   const score =
     Math.round(
-      (correct / qs.length) * 100
+      (correct / qs.length) *
+      100
     );
 
 
   const usedMs =
     Math.min(
       totalMs,
-      Date.now() - startedAt
+      Date.now() -
+      startedAt
     );
 
 
@@ -1472,12 +1742,14 @@ async function finish(auto = false) {
 
   }
 
+
   if ($("finalName")) {
 
     $("finalName").textContent =
       participantName;
 
   }
+
 
   if ($("final")) {
 
@@ -1486,134 +1758,194 @@ async function finish(auto = false) {
 
   }
 
+
   if ($("detail")) {
 
     $("detail").textContent =
-      `Waktu pengerjaan: ${fmt(usedMs)}`;
+      `Waktu pengerjaan: ${fmt(
+        usedMs
+      )}`;
 
   }
+
 
   renderReview();
 
   show("end");
 
-  window.scrollTo(0, 0);
+  window.scrollTo(
+    0,
+    0
+  );
 }
 
 
 /* =========================================================
    REVIEW
-========================================================= */
+   ========================================================= */
 
 function renderReview() {
 
   const review =
     $("review");
 
-  if (!review) return;
+  if (!review) {
+    return;
+  }
+
 
   review.innerHTML = "";
 
 
-  qs.forEach((question, index) => {
+  qs.forEach(
+    (question, index) => {
 
-    const item =
-      document.createElement("div");
+      const item =
+        document.createElement(
+          "div"
+        );
 
-    item.className =
-      "rev";
-
-
-    const userAnswer =
-      answers[index];
-
-
-    const empty =
-      !userAnswer ||
-      normalizeAnswer(userAnswer) === "";
+      item.className =
+        "rev";
 
 
-    const correct =
-      !empty &&
-      isRight(question, userAnswer);
+      const userAnswer =
+        answers[index];
 
 
-    if (correct) {
-      item.classList.add("ok");
-    }
+      const empty =
+        !userAnswer ||
+        normalizeAnswer(
+          userAnswer
+        ) === "";
 
 
-    const number =
-      document.createElement("div");
-
-    number.textContent =
-      `${index + 1}.`;
-
-
-    const content =
-      document.createElement("div");
+      const correct =
+        !empty &&
+        isRight(
+          question,
+          userAnswer
+        );
 
 
-    const title =
-      document.createElement("div");
+      if (correct) {
 
-    title.textContent =
-      question.q;
+        item.classList.add(
+          "ok"
+        );
 
-
-    const answer =
-      document.createElement("div");
+      }
 
 
-    answer.innerHTML =
-      empty
-        ? `<span>Jawaban: Kosong</span>`
-        : `<span>Jawaban kamu: <b>${escapeHtml(userAnswer)}</b></span>`;
+      const number =
+        document.createElement(
+          "div"
+        );
+
+      number.textContent =
+        `${index + 1}.`;
 
 
-    content.appendChild(title);
-    content.appendChild(answer);
+      const content =
+        document.createElement(
+          "div"
+        );
 
 
-    if (!correct && !empty) {
+      const title =
+        document.createElement(
+          "div"
+        );
 
-      const correctAnswer =
-        document.createElement("div");
+      title.textContent =
+        question.q;
 
-      correctAnswer.innerHTML =
-        `Jawaban benar: <b>${escapeHtml(question.answer)}</b>`;
+
+      const answer =
+        document.createElement(
+          "div"
+        );
+
+
+      answer.innerHTML =
+        empty
+          ? `<span>Jawaban: Kosong</span>`
+          : `<span>Jawaban kamu: <b>${escapeHtml(
+              userAnswer
+            )}</b></span>`;
+
 
       content.appendChild(
-        correctAnswer
+        title
+      );
+
+      content.appendChild(
+        answer
+      );
+
+
+      if (
+        !correct &&
+        !empty
+      ) {
+
+        const correctAnswer =
+          document.createElement(
+            "div"
+          );
+
+        correctAnswer.innerHTML =
+          `Jawaban benar: <b>${escapeHtml(
+            question.answer
+          )}</b>`;
+
+
+        content.appendChild(
+          correctAnswer
+        );
+
+      }
+
+
+      item.appendChild(
+        number
+      );
+
+      item.appendChild(
+        content
+      );
+
+
+      review.appendChild(
+        item
       );
 
     }
-
-
-    item.appendChild(number);
-    item.appendChild(content);
-
-    review.appendChild(item);
-
-  });
+  );
 }
 
 
 /* =========================================================
    RANKING
-========================================================= */
+   ========================================================= */
 
 async function renderRanking() {
 
   const list =
     $("rankingList");
 
-  if (!list) return;
+  if (!list) {
+    return;
+  }
+
 
   list.innerHTML = "";
 
+
   const loading =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   loading.className =
     "rank-row";
@@ -1621,17 +1953,27 @@ async function renderRanking() {
   loading.textContent =
     "Memuat ranking global...";
 
-  list.appendChild(loading);
+
+  list.appendChild(
+    loading
+  );
+
 
   const ranking =
     await getRanking();
 
+
   list.innerHTML = "";
 
-  if (ranking.length === 0) {
+
+  if (
+    ranking.length === 0
+  ) {
 
     const empty =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
 
     empty.className =
       "rank-row";
@@ -1639,176 +1981,296 @@ async function renderRanking() {
     empty.textContent =
       "Belum ada ranking.";
 
-    list.appendChild(empty);
+
+    list.appendChild(
+      empty
+    );
 
     return;
-
   }
 
 
-  ranking.forEach((entry, index) => {
+  ranking.forEach(
+    (entry, index) => {
 
-    const row =
-      document.createElement("div");
+      const row =
+        document.createElement(
+          "div"
+        );
 
-    row.className =
-      "rank-row";
-
-
-    const number =
-      document.createElement("div");
-
-    number.className =
-      "rank-number";
-
-    number.textContent =
-      index + 1;
+      row.className =
+        "rank-row";
 
 
-    const info =
-      document.createElement("div");
+      const number =
+        document.createElement(
+          "div"
+        );
 
-    info.className =
-      "rank-info";
+      number.className =
+        "rank-number";
 
-
-    const name =
-      document.createElement("strong");
-
-    name.textContent =
-      entry.name || "Tanpa nama";
+      number.textContent =
+        index + 1;
 
 
-    const detail =
-      document.createElement("span");
+      const info =
+        document.createElement(
+          "div"
+        );
 
-    detail.textContent =
-      `${Number(entry.correct) || 0} benar • ${Number(entry.wrong) || 0} salah • ${Number(entry.empty) || 0} kosong`;
-
-
-    info.appendChild(name);
-    info.appendChild(detail);
+      info.className =
+        "rank-info";
 
 
-    const score =
-      document.createElement("div");
+      const name =
+        document.createElement(
+          "strong"
+        );
 
-    score.className =
-      "rank-score";
-
-    score.textContent =
-      `${Number(entry.score) || 0}%`;
+      name.textContent =
+        entry.name ||
+        "Tanpa nama";
 
 
-    row.appendChild(number);
-    row.appendChild(info);
-    row.appendChild(score);
+      const detail =
+        document.createElement(
+          "span"
+        );
 
-    list.appendChild(row);
+      detail.textContent =
+        `${Number(entry.correct) || 0} benar • ${Number(entry.wrong) || 0} salah • ${Number(entry.empty) || 0} kosong`;
 
-  });
+
+      info.appendChild(
+        name
+      );
+
+      info.appendChild(
+        detail
+      );
+
+
+      const score =
+        document.createElement(
+          "div"
+        );
+
+      score.className =
+        "rank-score";
+
+      score.textContent =
+        `${Number(entry.score) || 0}%`;
+
+
+      row.appendChild(
+        number
+      );
+
+      row.appendChild(
+        info
+      );
+
+      row.appendChild(
+        score
+      );
+
+
+      list.appendChild(
+        row
+      );
+
+    }
+  );
 }
 
 
 /* =========================================================
-   DURASI
-========================================================= */
+   INIT
+   ========================================================= */
 
-document
-  .querySelectorAll(".duration-btn")
-  .forEach(button => {
+function initThinkFast() {
 
-    button.addEventListener(
-      "click",
-      () => {
-
-        const minutes =
-          Number(button.dataset.min);
-
-        selectedMinutes =
-          minutes;
+  console.log(
+    "THINK FAST!!! initializing..."
+  );
 
 
-        document
-          .querySelectorAll(
-            ".duration-btn"
-          )
-          .forEach(btn => {
+  initSupabase();
 
-            btn.classList.remove(
+  addInputStyles();
+
+  addFeedbackStyles();
+
+
+  /* ================= DURASI ================= */
+
+  document
+    .querySelectorAll(
+      ".duration-btn"
+    )
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const minutes =
+              Number(
+                button.dataset.min
+              );
+
+
+            selectedMinutes =
+              minutes;
+
+
+            document
+              .querySelectorAll(
+                ".duration-btn"
+              )
+              .forEach(
+                btn => {
+
+                  btn.classList.remove(
+                    "selected"
+                  );
+
+                }
+              );
+
+
+            button.classList.add(
               "selected"
             );
 
-          });
+
+            if (
+              $("selectedTime")
+            ) {
+
+              $("selectedTime")
+                .textContent =
+                `Durasi dipilih: ${minutes} menit`;
+
+            }
 
 
-        button.classList.add(
-          "selected"
+            if ($("err")) {
+              $("err").textContent =
+                "";
+            }
+
+
+            const startButton =
+              $("startQuiz");
+
+
+            if (
+              startButton
+            ) {
+
+              startButton.disabled =
+                false;
+
+              startButton.style.pointerEvents =
+                "auto";
+
+            }
+
+          }
         );
 
+      }
+    );
 
-        if ($("selectedTime")) {
 
-          $("selectedTime").textContent =
-            `Durasi dipilih: ${minutes} menit`;
+  /* ================= START BUTTON ================= */
 
+  const startButton =
+    $("startQuiz");
+
+
+  if (startButton) {
+
+    startButton.addEventListener(
+      "click",
+      () => {
+
+        start(
+          selectedMinutes
+        );
+
+      }
+    );
+
+  }
+
+
+  /* ================= NAMA ================= */
+
+  if ($("nama")) {
+
+    $("nama").addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key !== "Enter"
+        ) {
+          return;
         }
 
 
-        if ($("err")) {
-          $("err").textContent = "";
-        }
+        event.preventDefault();
 
 
-        let startButton =
-          $("startQuiz");
+        if (!selectedMinutes) {
 
+          if ($("err")) {
 
-        if (!startButton) {
-
-          startButton =
-            document.createElement(
-              "button"
-            );
-
-          startButton.id =
-            "startQuiz";
-
-          startButton.type =
-            "button";
-
-          startButton.className =
-            "btn start-quiz-btn";
-
-          startButton.textContent =
-            "▶ Mulai Kuis";
-
-
-          const durationGrid =
-            document.querySelector(
-              ".duration-grid"
-            );
-
-
-          if (durationGrid) {
-
-            durationGrid.insertAdjacentElement(
-              "afterend",
-              startButton
-            );
+            $("err").textContent =
+              "Pilih durasi terlebih dahulu.";
 
           }
 
+          return;
+        }
 
-          startButton.addEventListener(
-            "click",
-            () => {
 
-              start(
-                selectedMinutes
-              );
+        start(
+          selectedMinutes
+        );
 
-            }
+      }
+    );
+
+  }
+
+
+  /* ================= SEBELUMNYA ================= */
+
+  if ($("prev")) {
+
+    $("prev").addEventListener(
+      "click",
+      () => {
+
+        if (autoNextTimer) {
+          return;
+        }
+
+
+        if (cur > 0) {
+
+          cur--;
+
+          render();
+
+          window.scrollTo(
+            0,
+            0
           );
 
         }
@@ -1816,67 +2278,137 @@ document
       }
     );
 
-  });
+  }
 
 
-/* =========================================================
-   ENTER NAMA
-========================================================= */
+  /* ================= BERIKUTNYA ================= */
 
-if ($("nama")) {
+  if ($("nxt")) {
 
-  $("nama").addEventListener(
-    "keydown",
-    event => {
+    $("nxt").addEventListener(
+      "click",
+      () => {
 
-      if (event.key !== "Enter") {
-        return;
-      }
-
-      event.preventDefault();
+        if (autoNextTimer) {
+          return;
+        }
 
 
-      if (!selectedMinutes) {
+        if (
+          cur <
+          qs.length - 1
+        ) {
 
-        if ($("err")) {
+          cur++;
 
-          $("err").textContent =
-            "Pilih durasi terlebih dahulu.";
+          render();
+
+          window.scrollTo(
+            0,
+            0
+          );
 
         }
 
-        return;
+      }
+    );
+
+  }
+
+
+  /* ================= SUBMIT ================= */
+
+  const submitButton =
+    $("submit");
+
+
+  if (submitButton) {
+
+    submitButton.style.display =
+      "none";
+
+    submitButton.disabled =
+      true;
+
+  }
+
+
+  /* ================= PAPAN RANKING ================= */
+
+  if ($("rankingBtn")) {
+
+    $("rankingBtn").addEventListener(
+      "click",
+      async () => {
+
+        show("ranking");
+
+        window.scrollTo(
+          0,
+          0
+        );
+
+        await renderRanking();
 
       }
+    );
 
-      start(selectedMinutes);
-
-    }
-  );
-
-}
+  }
 
 
-/* =========================================================
-   SEBELUMNYA
-========================================================= */
+  /* ================= RANKING DARI HASIL ================= */
 
-if ($("prev")) {
+  if ($("resultRanking")) {
 
-  $("prev").addEventListener(
-    "click",
-    () => {
+    $("resultRanking").addEventListener(
+      "click",
+      async () => {
 
-      if (autoNextTimer) {
-        return;
+        show("ranking");
+
+        window.scrollTo(
+          0,
+          0
+        );
+
+        await renderRanking();
+
       }
+    );
+
+  }
 
 
-      if (cur > 0) {
+  /* ================= KEMBALI KE START ================= */
 
-        cur--;
+  if ($("backStart")) {
 
-        render();
+    $("backStart").addEventListener(
+      "click",
+      () => {
+
+        clearInterval(
+          tick
+        );
+
+
+        finished =
+          false;
+
+
+        if (autoNextTimer) {
+
+          clearTimeout(
+            autoNextTimer
+          );
+
+          autoNextTimer =
+            null;
+
+        }
+
+
+        show("start");
 
         window.scrollTo(
           0,
@@ -1884,228 +2416,114 @@ if ($("prev")) {
         );
 
       }
+    );
 
-    }
-  );
-
-}
+  }
 
 
-/* =========================================================
-   BERIKUTNYA
-========================================================= */
+  /* ================= RESET RANKING ================= */
 
-if ($("nxt")) {
+  if ($("resetRanking")) {
 
-  $("nxt").addEventListener(
-    "click",
-    () => {
+    $("resetRanking").addEventListener(
+      "click",
+      () => {
 
-      if (autoNextTimer) {
-        return;
+        const yes =
+          confirm(
+            "Hapus semua ranking?"
+          );
+
+
+        if (!yes) {
+          return;
+        }
+
+
+        alert(
+          "Ranking global dikelola melalui Supabase Table Editor."
+        );
+
+
+        renderRanking();
+
       }
+    );
+
+  }
 
 
-      if (cur < qs.length - 1) {
+  /* ================= MAIN LAGI ================= */
 
-        cur++;
+  if ($("againEnd")) {
 
-        render();
+    $("againEnd").addEventListener(
+      "click",
+      () => {
+
+        clearInterval(
+          tick
+        );
+
+
+        finished =
+          false;
+
+
+        if (autoNextTimer) {
+
+          clearTimeout(
+            autoNextTimer
+          );
+
+          autoNextTimer =
+            null;
+
+        }
+
+
+        show("start");
 
         window.scrollTo(
           0,
           0
+
         );
 
       }
+    );
 
-    }
+  }
+
+
+  /* ================= START ================= */
+
+  show("start");
+
+
+  console.log(
+    "THINK FAST!!! berhasil dimuat."
   );
 
 }
 
 
 /* =========================================================
-   SUBMIT
-========================================================= */
+   DOM READY
+   ========================================================= */
 
-const submitButton =
-  $("submit");
+if (
+  document.readyState ===
+  "loading"
+) {
 
-
-if (submitButton) {
-
-  submitButton.style.display =
-    "none";
-
-  submitButton.disabled =
-    true;
-
-}
-
-
-/* =========================================================
-   RANKING
-========================================================= */
-
-if ($("rankingBtn")) {
-
-  $("rankingBtn").addEventListener(
-    "click",
-    () => {
-
-      renderRanking();
-
-      show("ranking");
-
-      window.scrollTo(
-        0,
-        0
-      );
-
-    }
+  document.addEventListener(
+    "DOMContentLoaded",
+    initThinkFast
   );
 
-}
+} else {
 
-
-/* =========================================================
-   RANKING DARI HASIL
-========================================================= */
-
-if ($("resultRanking")) {
-
-  $("resultRanking").addEventListener(
-    "click",
-    () => {
-
-      renderRanking();
-
-      show("ranking");
-
-      window.scrollTo(
-        0,
-        0
-      );
-
-    }
-  );
+  initThinkFast();
 
 }
-
-
-/* =========================================================
-   KEMBALI KE START
-========================================================= */
-
-if ($("backStart")) {
-
-  $("backStart").addEventListener(
-    "click",
-    () => {
-
-      clearInterval(tick);
-
-      finished = false;
-
-
-      if (autoNextTimer) {
-
-        clearTimeout(autoNextTimer);
-
-        autoNextTimer = null;
-
-      }
-
-
-      show("start");
-
-      window.scrollTo(
-        0,
-        0
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   RESET RANKING
-========================================================= */
-
-if ($("resetRanking")) {
-
-  $("resetRanking").addEventListener(
-    "click",
-    () => {
-
-      const yes =
-        confirm(
-          "Hapus semua ranking?"
-        );
-
-
-      if (!yes) return;
-
-
-      alert(
-        "Ranking global tidak dihapus dari website. Hapus data ranking melalui Supabase Table Editor jika benar-benar diperlukan."
-      );
-
-      renderRanking();
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   MAIN LAGI
-========================================================= */
-
-if ($("againEnd")) {
-
-  $("againEnd").addEventListener(
-    "click",
-    () => {
-
-      clearInterval(tick);
-
-      finished = false;
-
-
-      if (autoNextTimer) {
-
-        clearTimeout(autoNextTimer);
-
-        autoNextTimer = null;
-
-      }
-
-
-      show("start");
-
-      window.scrollTo(
-        0,
-        0
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   INITIAL
-========================================================= */
-
-show("start");
-
-
-console.log(
-  "THINK FAST!!! berhasil dimuat."
-);
