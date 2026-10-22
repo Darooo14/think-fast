@@ -125,6 +125,7 @@ p{
 #end,
 #ranking{
   position:relative;
+  z-index:2;
 
   padding:30px 28px 30px 66px;
 
@@ -152,6 +153,15 @@ p{
 #game::before,
 #end::before,
 #ranking::before{
+  z-index:0;
+  pointer-events:none;
+  #start > *,
+#game > *,
+#end > *,
+#ranking > *{
+  position:relative;
+  z-index:2;
+}
   content:"";
 
   position:absolute;

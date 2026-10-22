@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://ilevxvbgyeobovtvvvwp.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsZXZ4dmJneWVvYm92dHZ2dndwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2NzA2NjQsImV4cCI6MjEwODI0NjY0fQ.UvXKtjam2A44R8002Ge1AMXueo_rSxC_HRaxHlzLopU";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsZXZ4dmJneWVvYm92dHZ2dndwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2NzA2NjQsImV4cCI6MjEwODI0NjY2NH0.UvXKtjam2A44R8002Ge1AMXueo_rSxC_HRaxHlzLopU";
 
 let supabaseClient = null;
 
@@ -658,7 +658,7 @@ function updateTimer() {
 
 
   const timer =
-    $("timer");
+    $("clock");
 
   if (timer) {
     timer.textContent =
