@@ -1,3 +1,12 @@
+const SUPABASE_URL = "https://ilevxvbgyeobovtvvvwp.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsZXZ4dmJneWVvYm92dHZ2dndwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2NzA2NjQsImV4cCI6MjEwODI0NjY2NH0.UvXKtjam2A44R8002Ge1AMXueo_rSxC_HRaxHlzLopU";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
 /* =========================================================
    THINK FAST!!!
    FULL SCRIPT
@@ -406,51 +415,72 @@ function show(id) {
 
 
 /* =========================================================
-   RANKING
+   RANKING GLOBAL SUPABASE
 ========================================================= */
 
-const RANKING_KEY = "thinkFastRanking";
+const RANKING_LIMIT = 100;
 
-
-function getRanking() {
+async function saveRanking(entry) {
 
   try {
 
-    const data =
-      JSON.parse(
-        localStorage.getItem(RANKING_KEY) || "[]"
-      );
+    const { error } =
+      await supabaseClient
+        .from("think_fast_ranking")
+        .insert({
+          name: String(entry.name || "").trim().slice(0, 40),
+          score: Number(entry.score) || 0,
+          correct: Number(entry.correct) || 0,
+          wrong: Number(entry.wrong) || 0,
+          empty: Number(entry.empty) || 0,
+          time_seconds: Math.max(
+            0,
+            Math.floor((Number(entry.time) || 0) / 1000)
+          )
+        });
 
-    return Array.isArray(data) ? data : [];
+    if (error) {
+      console.error("Gagal menyimpan ranking Supabase:", error);
+      return false;
+    }
 
-  } catch {
+    console.log("Ranking berhasil disimpan ke Supabase.");
+    return true;
 
-    return [];
+  } catch (error) {
+
+    console.error("Supabase ranking error:", error);
+    return false;
 
   }
 }
 
 
-function saveRanking(entry) {
+async function getRanking() {
 
-  const ranking = getRanking();
+  try {
 
-  ranking.push(entry);
+    const { data, error } =
+      await supabaseClient
+        .from("think_fast_ranking")
+        .select("id,name,score,correct,wrong,empty,time_seconds,created_at")
+        .order("score", { ascending: false })
+        .order("time_seconds", { ascending: true })
+        .limit(RANKING_LIMIT);
 
-  ranking.sort((a, b) => {
-
-    if (b.score !== a.score) {
-      return b.score - a.score;
+    if (error) {
+      console.error("Gagal mengambil ranking Supabase:", error);
+      return [];
     }
 
-    return a.time - b.time;
+    return Array.isArray(data) ? data : [];
 
-  });
+  } catch (error) {
 
-  localStorage.setItem(
-    RANKING_KEY,
-    JSON.stringify(ranking.slice(0, 100))
-  );
+    console.error("Supabase ranking error:", error);
+    return [];
+
+  }
 }
 
 
@@ -762,134 +792,268 @@ function render() {
 ========================================================= */
 
 function renderInputQuestion(question, placeholder) {
-    const opts = $("opts");
-    if (!opts) return;
 
-    opts.innerHTML = "";
+  const opts = $("opts");
 
-    const wrapper = document.createElement("div");
-    wrapper.style.cssText = `
-        width: 100%;
-        display: block;
-        position: relative;
-        z-index: 9999;
-        pointer-events: auto;
-    `;
+  if (!opts) return;
 
-    const label = document.createElement("div");
-    label.textContent = "Ketik jawaban kamu:";
-    label.style.cssText = `
-        display: block;
-        color: #fff;
-        font-size: 16px;
-        margin-bottom: 10px;
-        pointer-events: none;
-    `;
+  opts.innerHTML = "";
 
-    const input = document.createElement("input");
+  const wrapper =
+    document.createElement("div");
 
-    input.type = "text";
-    input.className = "quiz-input";
+  wrapper.style.cssText = `
+    width: 100%;
+    display: block;
+    position: relative;
+    z-index: 9999;
+    pointer-events: auto;
+  `;
 
-    input.setAttribute("autocomplete", "off");
-    input.setAttribute("spellcheck", "false");
+  const label =
+    document.createElement("div");
 
-    input.placeholder = placeholder || "Tulis jawaban...";
-    input.value = answers[cur] || "";
+  label.textContent =
+    "Ketik jawaban kamu:";
 
-    /*
-       PENTING:
-       Jangan pakai disabled.
-       Kita pakai readonly hanya kalau soal sudah terkunci.
-    */
-    input.readOnly = locked[cur] === true;
+  label.style.cssText = `
+    display: block;
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 10px;
+    pointer-events: none;
+  `;
 
-    input.style.setProperty("display", "block", "important");
-    input.style.setProperty("width", "100%", "important");
-    input.style.setProperty("height", "55px", "important");
-    input.style.setProperty("padding", "14px 16px", "important");
-    input.style.setProperty("box-sizing", "border-box", "important");
+  const input =
+    document.createElement("input");
 
-    input.style.setProperty("font-size", "18px", "important");
-    input.style.setProperty("font-family", "inherit", "important");
+  input.type = "text";
+  input.className = "quiz-input";
 
-    input.style.setProperty("color", "#ffffff", "important");
-    input.style.setProperty("-webkit-text-fill-color", "#ffffff", "important");
-    input.style.setProperty("caret-color", "#ffffff", "important");
+  input.setAttribute(
+    "autocomplete",
+    "off"
+  );
 
-    input.style.setProperty("background", "#111111", "important");
-    input.style.setProperty("border", "2px solid #ffffff", "important");
-    input.style.setProperty("border-radius", "10px", "important");
+  input.setAttribute(
+    "spellcheck",
+    "false"
+  );
 
-    input.style.setProperty("outline", "none", "important");
-    input.style.setProperty("opacity", "1", "important");
+  input.placeholder =
+    placeholder || "Tulis jawaban...";
 
-    input.style.setProperty("position", "relative", "important");
-    input.style.setProperty("z-index", "10000", "important");
-    input.style.setProperty("pointer-events", "auto", "important");
+  input.value =
+    answers[cur] || "";
 
-    /*
-       Saat mengetik:
-       JANGAN render ulang.
-       Kalau render() dipanggil setiap ketikan,
-       input akan dibuat ulang dan terasa tidak bisa mengetik.
-    */
-    input.addEventListener("input", function () {
-        if (locked[cur]) return;
+  input.readOnly =
+    locked[cur] === true;
 
-        answers[cur] = input.value;
-    });
+  input.style.setProperty(
+    "display",
+    "block",
+    "important"
+  );
 
-    /*
-       ENTER = kunci jawaban
-    */
-    input.addEventListener("keydown", function (e) {
-        if (e.key !== "Enter") return;
+  input.style.setProperty(
+    "width",
+    "100%",
+    "important"
+  );
 
-        e.preventDefault();
+  input.style.setProperty(
+    "height",
+    "55px",
+    "important"
+  );
 
-        if (locked[cur]) return;
-        if (autoNextTimer) return;
+  input.style.setProperty(
+    "padding",
+    "14px 16px",
+    "important"
+  );
 
-        const value = normalizeAnswer(input.value);
+  input.style.setProperty(
+    "box-sizing",
+    "border-box",
+    "important"
+  );
 
-        if (!value) return;
+  input.style.setProperty(
+    "font-size",
+    "18px",
+    "important"
+  );
 
-        answers[cur] = input.value;
-        locked[cur] = true;
+  input.style.setProperty(
+    "font-family",
+    "inherit",
+    "important"
+  );
 
-        render();
+  input.style.setProperty(
+    "color",
+    "#ffffff",
+    "important"
+  );
 
-        setTimeout(() => {
-            advanceAfterAnswer();
-        }, 800);
-    });
+  input.style.setProperty(
+    "-webkit-text-fill-color",
+    "#ffffff",
+    "important"
+  );
 
-    wrapper.appendChild(label);
-    wrapper.appendChild(input);
-    opts.appendChild(wrapper);
+  input.style.setProperty(
+    "caret-color",
+    "#ffffff",
+    "important"
+  );
 
-    /*
-       Pastikan container juga bisa menerima klik/fokus
-    */
-    opts.style.setProperty("pointer-events", "auto", "important");
-    opts.style.setProperty("position", "relative", "important");
-    opts.style.setProperty("z-index", "9999", "important");
+  input.style.setProperty(
+    "background",
+    "#111111",
+    "important"
+  );
 
-    /*
-       Fokus otomatis
-    */
-    if (!locked[cur]) {
-        setTimeout(() => {
-            if (document.body.contains(input)) {
-                input.focus();
-                input.setSelectionRange(
-                    input.value.length,
-                    input.value.length
-                );
-            }
-        }, 100);
+  input.style.setProperty(
+    "border",
+    "2px solid #ffffff",
+    "important"
+  );
+
+  input.style.setProperty(
+    "border-radius",
+    "10px",
+    "important"
+  );
+
+  input.style.setProperty(
+    "outline",
+    "none",
+    "important"
+  );
+
+  input.style.setProperty(
+    "opacity",
+    "1",
+    "important"
+  );
+
+  input.style.setProperty(
+    "position",
+    "relative",
+    "important"
+  );
+
+  input.style.setProperty(
+    "z-index",
+    "10000",
+    "important"
+  );
+
+  input.style.setProperty(
+    "pointer-events",
+    "auto",
+    "important"
+  );
+
+
+  input.addEventListener(
+    "input",
+    function () {
+
+      if (locked[cur]) return;
+
+      answers[cur] =
+        input.value;
+
     }
+  );
+
+
+  input.addEventListener(
+    "keydown",
+    function (e) {
+
+      if (e.key !== "Enter") {
+        return;
+      }
+
+      e.preventDefault();
+
+      if (locked[cur]) {
+        return;
+      }
+
+      if (autoNextTimer) {
+        return;
+      }
+
+      const value =
+        normalizeAnswer(input.value);
+
+      if (!value) {
+        return;
+      }
+
+      answers[cur] =
+        input.value;
+
+      locked[cur] = true;
+
+      render();
+
+      setTimeout(() => {
+        advanceAfterAnswer();
+      }, 800);
+
+    }
+  );
+
+
+  wrapper.appendChild(label);
+  wrapper.appendChild(input);
+
+  opts.appendChild(wrapper);
+
+
+  opts.style.setProperty(
+    "pointer-events",
+    "auto",
+    "important"
+  );
+
+  opts.style.setProperty(
+    "position",
+    "relative",
+    "important"
+  );
+
+  opts.style.setProperty(
+    "z-index",
+    "9999",
+    "important"
+  );
+
+
+  if (!locked[cur]) {
+
+    setTimeout(() => {
+
+      if (document.body.contains(input)) {
+
+        input.focus();
+
+        input.setSelectionRange(
+          input.value.length,
+          input.value.length
+        );
+
+      }
+
+    }, 100);
+
+  }
 }
 
 
@@ -1187,7 +1351,7 @@ function addFeedbackStyles() {
    FINISH
 ========================================================= */
 
-function finish(auto = false) {
+async function finish(auto = false) {
 
   if (finished) {
     return;
@@ -1268,30 +1432,37 @@ function finish(auto = false) {
     );
 
 
-  saveRanking({
+  const rankingSaved =
+    await saveRanking({
 
-    name:
-      participantName,
+      name:
+        participantName,
 
-    score:
-      score,
+      score:
+        score,
 
-    correct:
-      correct,
+      correct:
+        correct,
 
-    wrong:
-      wrong,
+      wrong:
+        wrong,
 
-    empty:
-      empty,
+      empty:
+        empty,
 
-    time:
-      usedMs,
+      time:
+        usedMs
 
-    date:
-      new Date().toISOString()
+    });
 
-  });
+
+  if (!rankingSaved) {
+
+    console.warn(
+      "Skor selesai, tetapi gagal dikirim ke ranking global."
+    );
+
+  }
 
 
   if ($("sum")) {
@@ -1432,18 +1603,30 @@ function renderReview() {
    RANKING
 ========================================================= */
 
-function renderRanking() {
+async function renderRanking() {
 
   const list =
     $("rankingList");
 
   if (!list) return;
 
-  const ranking =
-    getRanking();
-
   list.innerHTML = "";
 
+  const loading =
+    document.createElement("div");
+
+  loading.className =
+    "rank-row";
+
+  loading.textContent =
+    "Memuat ranking global...";
+
+  list.appendChild(loading);
+
+  const ranking =
+    await getRanking();
+
+  list.innerHTML = "";
 
   if (ranking.length === 0) {
 
@@ -1493,14 +1676,14 @@ function renderRanking() {
       document.createElement("strong");
 
     name.textContent =
-      entry.name;
+      entry.name || "Tanpa nama";
 
 
     const detail =
       document.createElement("span");
 
     detail.textContent =
-      `${entry.correct} benar • ${entry.wrong} salah • ${entry.empty} kosong`;
+      `${Number(entry.correct) || 0} benar • ${Number(entry.wrong) || 0} salah • ${Number(entry.empty) || 0} kosong`;
 
 
     info.appendChild(name);
@@ -1514,7 +1697,7 @@ function renderRanking() {
       "rank-score";
 
     score.textContent =
-      `${entry.score}%`;
+      `${Number(entry.score) || 0}%`;
 
 
     row.appendChild(number);
@@ -1867,10 +2050,9 @@ if ($("resetRanking")) {
       if (!yes) return;
 
 
-      localStorage.removeItem(
-        RANKING_KEY
+      alert(
+        "Ranking global tidak dihapus dari website. Hapus data ranking melalui Supabase Table Editor jika benar-benar diperlukan."
       );
-
 
       renderRanking();
 
